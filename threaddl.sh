@@ -3,7 +3,7 @@
 name=`basename $0`
 
 usage () {
-  echo "$name - 4chan thread downloader"
+	echo "$name - 4chan thread downloader"
 	echo ""
 	echo "Usage: $name [4chan thread URL] <time value and/or return target>"
 	echo ""
@@ -240,9 +240,9 @@ while true; do
 		exito
 	fi
 
-	echo OK
+	echo -ne OK
 
 	sleep $SLAP
 
-	echo "\b\b  \b\b"
+	echo -ne "\b\b  \b\b"
 done
