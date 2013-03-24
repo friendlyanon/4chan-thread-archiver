@@ -4,6 +4,21 @@ threaddl
 Archive complete threads with images with a truncated 4chanX injected and
 more features for more comfortable browsing of the threads.
 
+Notes
+-----
+
+* Works on Android with the proper GNU tools (use Google to find these)
+* The script saves the thread to the current location of the console
+* HTTPS protocol is ignored, HTTP is used for everything
+* The thread's HTML is cleaned up of everything not necessary, which
+    results in a very small filesize
+* The gallery works only if the it's accessed online, because of
+    XMLHttpRequest
+* Deleted posts aren't prereserved, but if you started archiving the
+    thread before the deletion of the post/image, the image will most
+    likely be saved (if you find a way to preserve posts as well,
+    post an issue or pull request to contact me)
+
 Dependencies
 ------------
 
