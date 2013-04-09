@@ -54,8 +54,6 @@ ST="static.4chan.org"
 SLAP=$SLP
 NO=$(echo "$LOC" | grep -o '[0-9]\+$')
 BO=$(echo "$LOC" | grep -o '^[^_]\+')
-N="\n"
-R="\r"
 LM=""
 alias wget="wget --referer=\"http://boards.4chan.org/"$BO"\""
 
