@@ -47,12 +47,17 @@ if [ ! $LOC ]; then
 	usage
 fi
 
+alias echo="/data/local/bin/echo -ne"
 ST="static.4chan.org"
 [ ! $SLP ] && SLP="10"
 [ ! $RET ] && RET="./"
 SLAP=$SLP
 NO=$(echo "$LOC" | grep -o '[0-9]\+$')
+BO=$(echo "$LOC" | grep -o '^[^_]\+')
+N="\n"
+R="\r"
 LM=""
+alias wget="wget --referer=\"http://boards.4chan.org/"$BO"\""
 
 thejob () {
 	if [ ! -d $LOC ]; then
@@ -75,7 +80,7 @@ thejob () {
 
 	if [ ! -s gallery.html ]; then
 		cat <<EOF > gallery.html
-<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0" /><title>Image gallery</title><style type="text/css">.loading{display:inline-block;width:0;height:0;border-right:20px solid #39f;border-top:20px solid red;border-left:20px solid yellow;border-bottom:20px solid green;border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;animation:bganim 1.5s ease 0s infinite;-moz-animation:bganim 1.5s ease 0s infinite;-webkit-animation:bganim 1.5s ease 0s infinite}@keyframes bganim{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@-moz-keyframes bganim{from{-moz-transform:rotate(0deg)}to{-moz-transform:rotate(360deg)}}@-webkit-keyframes bganim{from{-webkit-transform:rotate(0deg)}to{-webkit-transform:rotate(360deg)}}html,body{width:100%;height:100%;margin:0;font-family:Helvetica,Arial,Verdana,sans-serif;text-align:center}div:not(.loading){text-align:center;max-width:250px;padding:5px;border:1px solid black;clear:both;display:inline-block;margin-top:5px}img{max-width:250px;max-height:250px}s{margin-top:3px;display:block;word-wrap:break-word;text-decoration:none}table{border:0;width:100%;height:100%}td{width:50%;text-align:left}td:first-of-type{text-align:right}.middle{vertical-align:middle}</style></head><body><table><tr><td><div class="loading"></div></td><td class="middle">Loading...</td></tr></table><script type="text/javascript">var d=document,\$=function(a){return d.querySelector(a)},html="<h1>Image gallery</h1>",x=new XMLHttpRequest(),td=\$(".middle"),r;x.onreadystatechange=function(){if(x.readyState==4){if(x.status==200){td.innerHTML="Parsing gallery...";x.responseText.split("\n").some(function(a){a=a.split("|");if(a.length>1){html+='<div><a href="../'+a[0]+'"><img src="'+a[0].split(".")[0]+'s.jpg" alt="Image" /></a><s>'+a[1]+'</s><s>'+a[2]+'</s></div>'}return});\$("body").innerHTML=html}else{\$("td").innerHTML="Er";td.innerHTML="ror"}}};x.open("GET","images_list",true);x.setRequestHeader("Cache-Control","no-cache");x.send(null);td.innerHTML="Fetching images list..."</script></body></html>
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0" /><title>Image gallery</title><style type="text/css">.loading{display:inline-block;width:0;height:0;border-right:20px solid #39f;border-top:20px solid red;border-left:20px solid yellow;border-bottom:20px solid green;border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;animation:bganim 1.5s ease 0s infinite;-moz-animation:bganim 1.5s ease 0s infinite;-webkit-animation:bganim 1.5s ease 0s infinite}@keyframes bganim{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@-moz-keyframes bganim{from{-moz-transform:rotate(0deg)}to{-moz-transform:rotate(360deg)}}@-webkit-keyframes bganim{from{-webkit-transform:rotate(0deg)}to{-webkit-transform:rotate(360deg)}}html,body{width:100%;height:100%;margin:0;font-family:Helvetica,Arial,Verdana,sans-serif;text-align:center}div:not(.loading){text-align:center;max-width:250px;padding:5px;border:1px solid black;clear:both;display:inline-block;margin-top:5px}img{max-width:250px;max-height:250px}s{margin-top:3px;display:block;word-wrap:break-word;text-decoration:none}table{border:0;width:100%;height:100%}td{width:50%;text-align:left}td:first-of-type{text-align:right}.middle{vertical-align:middle}</style></head><body><table><tr><td><div class="loading"></div></td><td class="middle">Loading...</td></tr></table><script type="text/javascript">var d=document,\$=function(a){return d.querySelector(a)},html="<h1>Image gallery</h1>",x=new XMLHttpRequest(),td=\$(".middle"),r;x.onreadystatechange=function(){if(x.readyState==4){if(x.status==200){td.innerHTML="Parsing gallery...";x.responseText.split("\n").some(function(a){a=a.split("|");if(a.length>1){html+='<div><a href="../'+a[0]+'"><img src="'+a[0].split(".")[0]+'s.jpg" alt="Image" /></a><s>'+a[1]+'</s><s>'+a[2]+'</s></div>'}return});\$("body").innerHTML=html}else{\$("td").innerHTML="Er<br>Are you trying to";td.innerHTML="ror<br>open this offline?"}}};x.open("GET","images_list",true);x.setRequestHeader("Cache-Control","no-cache");x.send(null);td.innerHTML="Fetching images list..."</script></body></html>
 EOF
 	fi
 
@@ -128,7 +133,7 @@ EOF
 		s@//'$ST'/image/\([a-z]*icon.gif\)@'$LOC'/misc/\1@g
 		s_\(<a href="\)'$NO'#p_\1#p_g
 		s_<a href="#p'$NO'"[^>]*>&gt;&gt;'$NO'_& (OP)_g
-		s_\(<a href="[0-9]\+\)\(#p[^>]*>[^<]*\)_\1.html\2 (Cross-thread)_g
+		s_\(<a href="\)\([0-9]\+\)\(#p[^>]*>[^<]*\)_\1'$BO'_\2.html\3 (Cross-thread)_g
 		s_\(</div></div></div><hr>\)<div class="mobile"_\1\n_
 		s_\(<div class="navLinks navLinksBot desktop">.<a href="\.\./\./"[^>]*>Return</a>. .<a href="\)#top\(">Top</a>.\)_\n<!</form><span style="float:right;">Style: [ <a href="javascript:sT(1);dE.scrollIntoView(false)">Default</a> | <a href="javascript:sT(0);dE.scrollIntoView(false)">Tomorrow</a> ]</span>\1javascript:dE.scrollIntoView()\2\n_
 		s@</body>@\n<!</div>&@}' -e '{s:\(<a href="\)\.\./\./\([^>]*>Return</a>\):\1'"$RET"'\2:g
