@@ -55,7 +55,8 @@ time value:
 * 1 -> Download once
 * 10 - 999 -> Interval in seconds between fetches
 
-return target: a valid HTML path to a document you want to return
+return target: a valid HTML path to a document you want to return to
+by clicking [Return]
 
 Archive Layout
 --------------
