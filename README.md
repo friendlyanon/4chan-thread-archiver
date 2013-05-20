@@ -48,6 +48,8 @@ Archiving
 
 4chan thread URL: something like
 https://boards.4chan.org/vg/res/30100764#p30100764
+or
+http://boards.4chan.org/c/res/2012645
 
 time value:
 * 1 -> Download once
