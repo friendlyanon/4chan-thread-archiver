@@ -8,7 +8,7 @@ Notes
 -----
 
 * Works on Android with the proper GNU tools (use Google to find these).
-    ** Please edit ** the interpreter in the first line before using it on Android!
+    **Please edit** the interpreter in the first line before using it on Android!
 * The script saves the thread to the current location of the console
 * HTTPS protocol is ignored, HTTP is used for everything
 * The thread's HTML is cleaned up of everything not necessary, which
