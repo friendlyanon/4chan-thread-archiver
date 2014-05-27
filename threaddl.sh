@@ -1,6 +1,6 @@
 #!/bin/bash
 
-name=`basename $0`
+name=$(basename $0)
 
 usage () {
 	echo "$name - 4chan thread downloader"
@@ -23,7 +23,7 @@ usage () {
 [ $# -eq 0 ] && usage
 
 for arg in $@; do
-	urltest=$(echo "$arg" | sed -e "s_^https_http_" | egrep -o "^http://boards.4chan.org/[a-z0-9]+/res/[0-9]+")
+	urltest=$(echo "$arg" | sed -e "s_^https_http_" | egrep -o "^http://boards.4chan.org/[a-z0-9]+/thread/[0-9]+")
 	timetest=$(echo "$arg" |egrep "^[0-9]{1,3}$")
 	if [ $urltest ]; then
 		URL="$urltest"
@@ -38,7 +38,7 @@ done
 
 echo "4chan downloader"
 
-LOC=$(echo "$URL" | sed 's_.*/\([^/]\+\)/res/\(.\+\)_\1\_\2_')
+LOC=$(echo "$URL" | sed 's_.*/\([^/]\+\)/thread/\(.\+\)_\1\_\2_')
 
 if [ ! $LOC ]; then
 	echo "Can't determine the thread's number"
@@ -47,7 +47,6 @@ if [ ! $LOC ]; then
 	usage
 fi
 
-alias echo="/data/local/bin/echo -ne"
 ST="s.4cdn.org"
 [ ! $SLP ] && SLP="10"
 [ ! $RET ] && RET="./"
@@ -70,33 +69,33 @@ thejob () {
 
 	touch images_list
 
-	egrep "File: <a[^>]*>[^<]*</a>[^<]*<span[^>]*>[^<]*" ../../$LOC.html -o | sed -e 's_^.*>\([0-9]\+\....\)</a>-(\([^,]\+, [^,]\+\), <span>\?\(.*\)$_\1|\2|\3_g' -e 's/ title="\([^"]*\).*$/\1/g' -e '/^$/d' -e '$ s_$_\n_' > a
+	egrep "File: <a[^>]*>[^<]*</a>[^<]*<span[^>]*>[^<]*" ../../$LOC.html -o | sed -e 's_^.*>\([0-9]\+\....\)</a>-(\([^)]\+\), <span>\?\(.*\)$_\1|\2|\3_g' -e 's/ title="\([^"]*\).*$/\1/g' -e '/^$/d' -e '$ s_$_\n_' > a
 
-	cat images_list a | sort | uniq | sed -e '/^$/d' > images_list
+	cat images_list a | sed -e '$ s@$@\n'$(ls|grep spoiler)'@' | sort | uniq | sed -e '/^$/d' > images_list
 
 	rm a
 
 	if [ ! -s gallery.html ]; then
 		cat <<EOF > gallery.html
-<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0" /><title>Image gallery</title><style type="text/css">.loading{display:inline-block;width:0;height:0;border-right:20px solid #39f;border-top:20px solid red;border-left:20px solid yellow;border-bottom:20px solid green;border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;animation:bganim 1.5s ease 0s infinite;-moz-animation:bganim 1.5s ease 0s infinite;-webkit-animation:bganim 1.5s ease 0s infinite}@keyframes bganim{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@-moz-keyframes bganim{from{-moz-transform:rotate(0deg)}to{-moz-transform:rotate(360deg)}}@-webkit-keyframes bganim{from{-webkit-transform:rotate(0deg)}to{-webkit-transform:rotate(360deg)}}html,body{width:100%;height:100%;margin:0;font-family:Helvetica,Arial,Verdana,sans-serif;text-align:center}div:not(.loading){text-align:center;max-width:250px;padding:5px;border:1px solid black;clear:both;display:inline-block;margin-top:5px}img{max-width:250px;max-height:250px}s{margin-top:3px;display:block;word-wrap:break-word;text-decoration:none}table{border:0;width:100%;height:100%}td{width:50%;text-align:left}td:first-of-type{text-align:right}.middle{vertical-align:middle}</style></head><body><table><tr><td><div class="loading"></div></td><td class="middle">Loading...</td></tr></table><script type="text/javascript">var d=document,\$=function(a){return d.querySelector(a)},html="<h1>Image gallery</h1>",x=new XMLHttpRequest(),td=\$(".middle"),r;x.onreadystatechange=function(){if(x.readyState==4){if(x.status==200){td.innerHTML="Parsing gallery...";x.responseText.split("\n").some(function(a){a=a.split("|");if(a.length>1){html+='<div><a href="../'+a[0]+'"><img src="'+a[0].split(".")[0]+'s.jpg" alt="Image" /></a><s>'+a[1]+'</s><s>'+a[2]+'</s></div>'}return});\$("body").innerHTML=html}else{\$("td").innerHTML="Er<br>Are you trying to";td.innerHTML="ror<br>open this offline?"}}};x.open("GET","images_list",true);x.setRequestHeader("Cache-Control","no-cache");x.send(null);td.innerHTML="Fetching images list..."</script></body></html>
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0" /><title>Image gallery</title><style type="text/css">/*<![CDATA[*/.loading{display:inline-block;width:0;height:0;border-right:20px solid #39f;border-top:20px solid red;border-left:20px solid yellow;border-bottom:20px solid green;border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;animation:bganim 1.5s ease 0s infinite;-moz-animation:bganim 1.5s ease 0s infinite;-webkit-animation:bganim 1.5s ease 0s infinite}@keyframes bganim{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@-moz-keyframes bganim{from{-moz-transform:rotate(0deg)}to{-moz-transform:rotate(360deg)}}@-webkit-keyframes bganim{from{-webkit-transform:rotate(0deg)}to{-webkit-transform:rotate(360deg)}}html,body{width:100%;height:100%;margin:0;font-family:Helvetica,Arial,Verdana,sans-serif;text-align:center}div:not(.loading){text-align:center;max-width:250px;padding:5px;border:1px solid black;clear:both;display:inline-block;margin-top:5px}img{max-width:250px;max-height:250px}s{margin-top:3px;display:block;word-wrap:break-word;text-decoration:none}table{border:0;width:100%;height:100%}td{width:50%;text-align:left}td:first-of-type{text-align:right}.middle{vertical-align:middle}/*]]>*/</style></head><body><table><tr><td><div class="loading"></div></td><td class="middle">Loading...</td></tr></table><script type="text/javascript">/*<![CDATA[*/var d=document,\$=function(a){return d.querySelector(a)},html="<h1>Image gallery</h1>",x=new XMLHttpRequest(),td=\$(".middle"),r;x.onreadystatechange=function(){if(x.readyState==4){if(x.status==200){td.innerHTML="Parsing gallery...";var b = x.responseText.split("\n");b.some(function(a){if(b.lastIndexOf(a)==0&&a.indexOf('|')==-1)return;a=a.split("|");if(a.length>1){html+='<div><a href="../'+a[0]+'"><img src="'+a[1].indexOf('Spoiler')==0?b[b.length-1]:(a[0].split(".")[0]+"s.jpg")+'" alt="Image" /></a><s>'+a[1]+'</s><s>'+a[2]+'</s></div>'}return});\$("body").innerHTML=html}else{\$("td").innerHTML="Er<br>Are you trying to";td.innerHTML="ror<br>open this offline?"}}};x.open("GET","images_list",true);x.setRequestHeader("Cache-Control","no-cache");x.send(null);td.innerHTML="Fetching images list..."//]]></script></body></html>
 EOF
 	fi
 
 	cd ../..
 
-	egrep "//.\.t\.4cdn\.org/[a-z0-9]+/thumb/[0-9]*s\.jpg" $LOC.html -o | sed 's_^//_http://_g' > $LOC/misc/misc
+	egrep "//.\.t\.4cdn\.org/[^.]+\.jpg" $LOC.html -o | sed 's_^//_http:&_g' > $LOC/misc/misc
 
-	egrep "//${ST}/image/(spoiler[^\x2E]*\.png|filedeleted-res\.gif|favicon[^\x2E]*\.ico|[a-z]*icon\.gif)" $LOC.html -o | sed 's_^//_http://_g' >> $LOC/misc/misc
+	egrep "//${ST}/image/[^.]+\...." $LOC.html -o | sed 's_^//_http:&_g' | uniq >> $LOC/misc/misc
 
-	egrep "//${ST}/image/country/[a-z]*/?[\w]+\...." $LOC.html -o | sed 's_^//_http://_g' >> $LOC/misc/misc
+	egrep "//${ST}/image/country/[^.]+\...." $LOC.html -o | sed 's_^//_http:&_g' >> $LOC/misc/misc
 
 	egrep "//${ST}/css/[a-z]+\.[0-9]+\.css" $LOC.html -o | sed -e 's_^//_http:&_' | head -n1 > $LOC/misc/css
 
 	egrep "//${ST}/css/[a-z]+\.[0-9]+\.css" $LOC.html -o | sed -e 's_^//_http:&_' | egrep 'tomorrow|prettify' >> $LOC/misc/css
 
-	egrep "//${ST}/image/title/[0-9a-z]+\.(jpg|png|gif)" $LOC.html -o | sed 's_^//_http://_g' > $LOC/misc/logo
+	egrep 'data-src="[^.]+\.[^"]+' $LOC.html -o | sed 's_^data.src."_http://'$ST'/image/title/_' | head -n1 > $LOC/misc/logo
 
-	egrep "//i\.4cdn\.org/[a-z0-9]+/src/[0-9]*\.(jpg|png|gif)" $LOC.html -o | sed 's_^//_http://_g' > $LOC/images
+	egrep "//i\.4cdn\.org/[^.]+\.(jpg|png|gif|webm)" $LOC.html -o | sed 's_^//_http:&_g' > $LOC/images
 
 	sed -i -e 's@\(</head>\)@\n\1@' $LOC.html
 
@@ -114,28 +113,28 @@ EOF
 
 	sed -i -e '1 {s_<script_!>\n&_
 		s_<link [^>]*RSS feed[^>]*>__
-		s@//'$ST'/image/\(favicon[^\x2E]*\.ico\)@'$LOC'/misc/\1@
+		s@//'$ST'/image/\(favicon[^.]*\.ico\)@'$LOC'/misc/\1@
 		s_<link rel="alternate style[^-]*\(<link[^>]*tomorrow\.[^>]*>\)<link[^>]*>_\1_
-		s@//'$ST'/css/\([a-z0-9\.]\{1,75\}\.css\)@'$LOC'/misc/\1@g}' -e '$ {s_</head>_<!&_
+		s@//'$ST'/css/\([^.]\+\.[^.]\+\.css\)@'$LOC'/misc/\1@g}' -e '$ {s_</head>_<!&_
 		s_<div id="boardNavDesktop" class="desktop">_\n_
 		s_<div class="boardBanner"_\n<!&_
-		s_<hr class="above_\n_
+  s@ data-src="[^.]\+\.\([^"]\+\)">@><img alt="4chan" src="'$LOC'/misc/logo.\1" />@
+		s_<hr class="abovePost_\n_
 		s_ .<a[^>]*>Catalog</a>.__g
-		s_\(<div class="navLinks desktop">.<a href="\.\./\./[^#]*\)#bottom\(">Bottom</a>.\)_\n<!\1javascript:dE.scrollIntoView(false)\2</div><hr>\n_
+		s_\(<div class="navLinks desktop">.<a href="/[^/]\+/[^#]*\)#bottom\(">Bottom</a>.\)_\n<!\1javascript:dE.scrollIntoView(false)\2</div><hr>\n_
 		s_\(<form name="delform" id="delform"\)[^>]*_\n<!\1_
-		s@//.\.t\.4cdn\.org/[^/]*/thumb/\([0-9]*s\.jpg\)@'$LOC'/misc/\1@g
-		s@//i\.4cdn\.org/[^/]*/src/\([0-9]*\....\)@'$LOC'/\1@g
+		s@//.\.t\.4cdn\.org/[^/]*/\([0-9]*s\.jpg\)@'$LOC'/misc/\1@g
+		s@//i\.4cdn\.org/[^/]*/\([0-9]*\....\)@'$LOC'/\1@g
 		s@//'$ST'/image/title/[a-z0-9-]*\.\(...\)@'$LOC'/misc/logo.\1@g
-		s@//'$ST'/image/\(spoiler[^\x2E]*\....\)@'$LOC'/misc/\1@g
+		s@//'$ST'/image/\(spoiler[^.]*\....\)@'$LOC'/misc/\1@g
 		s@//'$ST'/image/\(filedeleted-res\.gif\)@'$LOC'/misc/\1@g
-		s@//'$ST'/image/country/\([^/]*/\?[^\x2E]*\....\)@'$LOC'/misc/\1@g
+		s@//'$ST'/image/country/\([^.]*\....\)@'$LOC'/misc/\1@g
 		s@//'$ST'/image/\([a-z]*icon.gif\)@'$LOC'/misc/\1@g
 		s_\(<a href="\)'$NO'#p_\1#p_g
 		s_<a href="#p'$NO'"[^>]*>&gt;&gt;'$NO'_& (OP)_g
 		s:\(<a href="\)\([0-9]\+\)\(#p[0-9]*\)\([^<]*\):\1'$BO'_\2.html" target="_blank" \3 (Cross-thread):g
-		s_\(</div></div></div><hr>\)<div class="mobile_\1\n_
-		s_\(<div class="navLinks navLinksBot desktop">.<a href="\.\./\./"[^>]*>Return</a>. .<a href="\)#top\(">Top</a>.\)_\n<!<span style="float:right;">Style: [ <a href="javascript:sT(1);dE.scrollIntoView(false)">Default</a> | <a href="javascript:sT(0);dE.scrollIntoView(false)">Tomorrow</a> ]</span>\1javascript:dE.scrollIntoView()\2\n_
-		s@</body>@\n<!</div></div></form>&@}' -e '{s:\(<a href="\)\.\./\./\([^>]*>Return</a>\):\1'"$RET"'\2:g
+		s_\(<div class="navLinks navLinksBot desktop">.<a href="/[^/]\+/"[^>]*>Return</a>. .<a href="\)#top\(">Top</a>.\)_\n<!<span style="float:right;">Style: [ <a href="javascript:sT(1);dE.scrollIntoView(false)">Default</a> | <a href="javascript:sT(0);dE.scrollIntoView(false)">Tomorrow</a> ]</span>\1javascript:dE.scrollIntoView()\2\n_
+		s@</body>@\n<!</div></div></form>&@}' -e '{s:\(<a href="\)/./\([^>]*>Return</a>\):\1'"$RET"'\2:g
 		s_\(<a[^>]*href="\)//_\1http://_g
 		s_\(<a[^>]*\) onclick="replyhl[^"]*"_\1_g
 		s_\(<a href="javascript:\)quote[^>]*_\1;"_g
@@ -181,8 +180,8 @@ EOF
 			rm *.css
 		fi
 		wget -q -nc -i css
-		wget -q -nc "$(grep -o 'fade-\?[a-z0-9]*\.png' $CSS | sed -e 's_.*_http://'$ST'/image/&_')"
-		sed -i -e 's_/image/\(fade[^\x2E]*\.png\)_\1_g' $CSS
+		wget -q -nc "$(grep -o 'fade[^.]*\.png' $CSS | sed -e 's_.*_http://'$ST'/image/&_')"
+		sed -i -e 's_/image/\(fade[^.]*\.png\)_\1_g' $CSS
 	fi
 
 	if [ "$(ls|grep logo.)" ]; then
@@ -199,13 +198,12 @@ EOF
 }
 
 exito () {
-	echo "Session completed. Exiting     "
+	echo "Session completed. Exiting"
 	exit 0
 }
 
 echo ""
 echo "Downloading to $LOC"
-echo ""
 echo "------------------------------"
 
 while true; do
