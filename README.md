@@ -8,6 +8,7 @@ Notes
 -----
 
 * Works on Android with the proper GNU tools (use Google to find these)
+    Please edit the interpreter in the first line before using it on Android!
 * The script saves the thread to the current location of the console
 * HTTPS protocol is ignored, HTTP is used for everything
 * The thread's HTML is cleaned up of everything not necessary, which
@@ -47,9 +48,10 @@ Archiving
     ./threaddl.sh [4chan thread URL] <time value and/or return target>
 
 4chan thread URL: something like
-https://boards.4chan.org/vg/res/30100764#p30100764
+https://boards.4chan.org/vg/thread/30100764#p30100764
 or
-http://boards.4chan.org/c/res/2012645
+http://boards.4chan.org/c/thread/2012645
+
 
 time value:
 * 1 -> Download once
@@ -62,5 +64,5 @@ Archive Layout
 --------------
 
     <number of OP post>.html: the thread
-    <board name>_<number of OP post>: contains full resolution images
+    <board name>_<number of OP post>/: contains full resolution images
     --misc/: contains thumbnails, css, logo image, gallery, misc stuff
