@@ -51,6 +51,8 @@ Archiving
 https://boards.4chan.org/vg/thread/30100764#p30100764
 or
 http://boards.4chan.org/c/thread/2012645
+or even
+https://boards.4chan.org/vg/thread/69229732/tera-general-terag
 
 
 time value:
