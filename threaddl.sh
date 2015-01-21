@@ -69,9 +69,9 @@ thejob () {
 
 	touch images_list
 
-	egrep "File: <a[^>]*>[^<]*</a>[^<]*<span[^>]*>[^<]*" ../../$LOC.html -o | sed -e 's_^.*>\([0-9]\+\....\)</a>-(\([^)]\+\), <span>\?\(.*\)$_\1|\2|\3_g' -e 's/ title="\([^"]*\).*$/\1/g' -e '/^$/d' -e '$ s_$_\n_' > a
+	egrep "File: <a[^>]*>[^<]*</a>[^<]*" ../../$LOC.html -o | sed -e 's_^File: <a title="\([^"]*\)" href="[^"]*/\([0-9]\+\....\)"[^/]*/a> (\([^)]\+\))$_\2|\3|\1_g' -e 's_^File: <a href="[^"]*/\([0-9]\+\....\)[^>]*>\([^<]*\)</a> (\([^)]\+\))$_\1|\3|\2_g' -e '/^$/d' -e '$ s_$_\n_' > a
 
-	cat images_list a | sed -e '$ s@$@\n'$(ls|grep spoiler)'@' | sort | uniq | sed -e '/^$/d' > images_list
+	cat images_list a | sed -e '$ s@$@\n'$(ls|grep spoiler)'@' | sort | uniq | sed -e '/^\s*$/d' > images_list
 
 	rm a
 
