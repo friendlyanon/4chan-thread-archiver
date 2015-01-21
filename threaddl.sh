@@ -130,7 +130,8 @@ EOF
 		s@//'$ST'/image/\(filedeleted-res\.gif\)@'$LOC'/misc/\1@g
 		s@//'$ST'/image/country/\([^.]*\....\)@'$LOC'/misc/\1@g
 		s@//'$ST'/image/\([a-z]*icon.gif\)@'$LOC'/misc/\1@g
-		s_<div data.tip[^>]*>[^<]*<div>__g
+		s@//'$ST'/image/\(archived.gif\)@'$LOC'/misc/\1@g
+		s_<div data-tip[^>]*>[^<]*</div>__g
 		s_\(<a href="\)'$NO'#p_\1#p_g
 		s_<a href="#p'$NO'"[^>]*>&gt;&gt;'$NO'_& (OP)_g
 		s:\(<a href="\)\([0-9]\+\)\(#p[0-9]*\)\([^<]*\):\1'$BO'_\2.html" target="_blank" \3 (Cross-thread):g
@@ -145,7 +146,6 @@ EOF
 		s_<a href="/ic\?/anim\.php?file=[0-9]*" target="\_blank">_<a title="View is supported only on 4chan">_g
 		s_\(<input type="checkbox"\)[^>]*_\1_g
 		s_<a onclick="toggle..exif[^"]*"_<a_g
-		s_<div class="mFileInfo mobile">[^<]*</div>__g
 		s_<wbr>__g}' $LOC.html
 
 	grep '^<!' $LOC.html > a
@@ -182,7 +182,7 @@ EOF
 
 	touch .nomedia
 
- cd ..
+	cd ..
 
 	for image in $(cat images); do
 		wget -q -nc $image
@@ -196,7 +196,7 @@ EOF
 		wget -q -nc $misc
 	done
 
- rm misc
+	rm misc
 
 	cd ../..
 }
@@ -227,14 +227,16 @@ while true; do
 	if [ "$LM" != "$(echo "$stat" |grep Last-Modified)" ]; then
 		LM="$(echo "$stat" |grep Last-Modified)"
 		if [ $SLP -gt 1 ] && [ $SLP -lt 10 ]; then
-			$SLP="10"
+			SLP="10"
 		elif [ $SLP -gt 999 ]; then
-			$SLP="999"
-		elif [ $SLP -lt 1 ]; then
-			$SLP="1"
+			SLP="999"
 		fi
 		SLAP=$SLP
 		wget -np -nd -nH -q -erobots=off $URL -O $LOC.html
+		if [ "$(egrep -o -e '<div class=\"closed\">' "$LOC".html)" ]; then
+			echo "Thread is archived on 4chan. Downloading once"
+			SLP="1"
+		fi
 		thejob
 	else
 		SLAP=`expr "$SLAP" + "5"`
