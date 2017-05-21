@@ -54,7 +54,7 @@ SLAP=$SLP
 NO=$(echo "$LOC" | grep -o '[0-9]\+$')
 BO=$(echo "$LOC" | grep -o '^[^_]\+')
 LM=""
-alias wget="wget --referer=\"http://boards.4chan.org/"$BO"\""
+alias wget="wget -q --timeout=30 --inet4-only --no-check-certificate --referer=\"http://boards.4chan.org/"$BO"\""
 
 thejob () {
 	if [ ! -d $LOC ]; then
@@ -83,11 +83,9 @@ EOF
 
 	cd ../..
 
-	egrep "//.\.t\.4cdn\.org/[^.]+\.jpg" $LOC.html -o | sed 's_^//_http:&_g' > $LOC/misc/misc
+	egrep "//i\d?\.4cdn\.org/[^.]+s\.jpg" $LOC.html -o | sed 's_^//_http:&_g' > $LOC/misc/misc
 
 	egrep "//${ST}/image/[^.]+\...." $LOC.html -o | sed 's_^//_http:&_g' | uniq >> $LOC/misc/misc
-
-	egrep "//${ST}/image/country/[^.]+\...." $LOC.html -o | sed 's_^//_http:&_g' >> $LOC/misc/misc
 
 	egrep "//${ST}/css/[a-z]+\.[0-9]+\.css" $LOC.html -o | sed -e 's_^//_http:&_' | head -n1 > $LOC/misc/css
 
@@ -95,7 +93,7 @@ EOF
 
 	egrep 'data-src="[^.]+\.[^"]+' $LOC.html -o | sed 's_^data.src."_http://'$ST'/image/title/_' | head -n1 > $LOC/misc/logo
 
-	egrep "//i\.4cdn\.org/[^.]+\.(jpg|png|gif|webm)" $LOC.html -o | sed 's_^//_http:&_g' > $LOC/images
+	egrep '//i\d?\.4cdn\.org/[^.]+[^s]\.[^"]+' $LOC.html -o | sed 's_^//_http:&_g' > $LOC/images
 
 	sed -i -e 's@\(</head>\)@\n\1@' $LOC.html
 
@@ -118,13 +116,13 @@ EOF
 		s@//'$ST'/css/\([^.]\+\.[^.]\+\.css\)@'$LOC'/misc/\1@g}' -e '$ {s_</head>_<!&_
 		s_<div id="boardNavDesktop" class="desktop">_\n_
 		s_<div class="boardBanner"_\n<!&_
-  s@ data-src="[^.]\+\.\([^"]\+\)">@><img alt="4chan" src="'$LOC'/misc/logo.\1" />@
+		s@ data-src="[^.]\+\.\([^"]\+\)">@><img alt="4chan" src="'$LOC'/misc/logo.\1" />@
 		s_<hr class="abovePost_\n_
 		s_ .<a[^>]*>Catalog</a>.__g
 		s_\(<div class="navLinks desktop">.<a href="/[^/]\+/[^#]*\)#bottom\(">Bottom</a>.\)_\n<!\1javascript:dE.scrollIntoView(false)\2</div><hr>\n_
 		s_\(<form name="delform" id="delform"\)[^>]*_\n<!\1_
-		s@//.\.t\.4cdn\.org/[^/]*/\([0-9]*s\.jpg\)@'$LOC'/misc/\1@g
-		s@//i\.4cdn\.org/[^/]*/\([0-9]*\....\)@'$LOC'/\1@g
+		s@//i[0-9]*\.4cdn\.org/[^/]*/\([0-9s]*\.jpg\)@'$LOC'/misc/\1@g
+		s@//i[0-9]*\.4cdn\.org/[^/]*/\([0-9]*\.[^"]*\)@'$LOC'/\1@g
 		s@//'$ST'/image/title/[a-z0-9-]*\.\(...\)@'$LOC'/misc/logo.\1@g
 		s@//'$ST'/image/country/\([^.]*\....\)@'$LOC'/misc/\1@g
 		s@//'$ST'/image/\([^.]\+\....\)@'$LOC'/misc/\1@g
@@ -164,8 +162,8 @@ EOF
 		if [ "$(ls|grep '.css')" ]; then
 			rm *.css
 		fi
-		wget -q -nc -i css
-		wget -q -nc "$(grep -o 'fade[^.]*\.png' $CSS | sed -e 's_.*_http://'$ST'/image/&_')"
+		wget -q --timeout=30 --inet4-only --no-check-certificate --referer="http://boards.4chan.org/"$BO"\"" -nc -i css
+		wget -q --timeout=30 --inet4-only --no-check-certificate --referer="http://boards.4chan.org/"$BO"\"" -nc "$(grep -o 'fade[^.]*\.png' $CSS | sed -e 's_.*_http://'$ST'/image/&_')"
 		sed -i -e 's_/image/\(fade[^.]*\.png\)_\1_g' $CSS
 	fi
 
@@ -173,7 +171,7 @@ EOF
 		rm "$(ls|grep logo.|head -n1)"
 	fi
 
-	wget -q -i logo -O "logo.$(sed 's_\._\n_g' logo|tail -n1)"
+	wget -q --timeout=30 --inet4-only --no-check-certificate --referer="http://boards.4chan.org/"$BO"\"" -i logo -O "logo.$(sed 's_\._\n_g' logo|tail -n1)"
 
 	rm logo css
 
@@ -182,7 +180,7 @@ EOF
 	cd ..
 
 	for image in $(cat images); do
-		wget -q -nc $image
+		wget -q --timeout=30 --inet4-only --no-check-certificate --referer="http://boards.4chan.org/"$BO"\"" -nc $image
 	done
 
 	rm images
@@ -190,7 +188,7 @@ EOF
 	cd misc
 
 	for misc in $(cat misc); do
-		wget -q -nc $misc
+		wget -q --timeout=30 --inet4-only --no-check-certificate --referer="http://boards.4chan.org/"$BO"\"" -nc $misc
 	done
 
 	rm misc
@@ -236,7 +234,7 @@ while true; do
 			SLP="999"
 		fi
 		SLAP=$SLP
-		wget -np -nd -nH -q -erobots=off $URL -O $LOC.html
+		wget -4 -q -np -nd -nH -erobots=off $URL -O $LOC.html
 		if [ "$(egrep -o -e '<div class=\"closed\">' "$LOC".html)" ]; then
 			echo "$archd. Downloading once"
 			SLP="1"
